@@ -1,0 +1,41 @@
+.category-header {
+    background-color: #444;
+    padding: 10px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.category-nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.category-item {
+    margin: 0 15px;
+}
+
+.category-link {
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    text-transform: capitalize;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.category-link:hover {
+    color: #f39c12;
+    border-bottom: 2px solid #f39c12;
+}
+
+.category-link:active {
+    color: #d35400;
+}
