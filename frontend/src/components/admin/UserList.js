@@ -2,7 +2,7 @@ import { Fragment, useEffect } from "react"
 import { Button } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
-import { deleteUser, getUsers } from "../../actions/userActions"
+import { deleteUser, getUser } from "../../actions/userActions"
 import { clearError, clearUserDeleted } from "../../slices/userSlice"
 import Loader from '../layouts/Loader';
 import { MDBDataTable} from 'mdbreact';
@@ -89,7 +89,7 @@ export default function UserList() {
             return;
         }
 
-        dispatch(getUsers)
+        dispatch(getUser)
     },[dispatch, error, isUserDeleted])
 
 

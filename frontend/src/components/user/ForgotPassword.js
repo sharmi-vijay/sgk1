@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { forgotPassword,clearAuthError } from "../../actions/userActions";
+import { forgotPassword, clearAuthError} from "../../actions/userActions";
+
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState("");
@@ -10,31 +11,24 @@ export default function ForgotPassword() {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('email', email);
-        dispatch(forgotPassword(formData))
-    }
+        dispatch(forgotPassword({ email }));
+    };
 
-    useEffect(()=>{
-        if(message) {
-            toast(message, {
-                type: 'success',
+    useEffect(() => {
+        if (message) {
+            toast.success(message, {
                 position: toast.POSITION.BOTTOM_CENTER
-            })
+            });
             setEmail("");
-            return;
         }
 
-        if(error)  {
-            toast(error, {
+        if (error) {
+            toast.error(error, {
                 position: toast.POSITION.BOTTOM_CENTER,
-                type: 'error',
-                onOpen: ()=> { dispatch(clearAuthError) }
-            })
-            return
+                onClose: () => dispatch(clearAuthError())
+            });
         }
-    }, [message, error, dispatch])
-
+    }, [message, error, dispatch]);
 
     return (
         <div className="row wrapper">
@@ -48,7 +42,8 @@ export default function ForgotPassword() {
                             id="email_field"
                             className="form-control"
                             value={email}
-                            onChange={e=>setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
                         />
                     </div>
 
@@ -57,10 +52,9 @@ export default function ForgotPassword() {
                         type="submit"
                         className="btn btn-block py-3">
                         Send Email
-                </button>
-
+                    </button>
                 </form>
             </div>
         </div>
-    )
+    );
 }

@@ -54,9 +54,9 @@ export const login = (email, password) => async (dispatch) => {
 
 }
 
-export const clearAuthError = dispatch => {
-    dispatch(clearError())
-}
+export const clearAuthError = () => async (dispatch) => {
+    dispatch({ type: "CLEAR_AUTH_ERROR" });
+};
 
 export const register = (userData) => async (dispatch) => {
 
@@ -136,51 +136,49 @@ export const updatePassword = (formData) => async (dispatch) => {
 
 }
 
-export const forgotPassword = (formData) => async (dispatch) => {
-
+export const forgotPassword = (emailData) => async (dispatch) => {
     try {
-        dispatch(forgotPasswordRequest())
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
-        const { data} =  await axios.post(`/api/v1/password/forgot`, formData, config);
-        dispatch(forgotPasswordSuccess(data))
-    } catch (error) {
-        dispatch(forgotPasswordFail(error.response.data.message))
-    }
+        dispatch(forgotPasswordRequest());
 
-}
+        const config = { headers: { "Content-Type": "application/json" } };
+
+        const { data } = await axios.post(
+            "http://127.0.0.1:8000/api/v1/password/forgot",
+            emailData,
+            config
+        );
+
+        dispatch(forgotPasswordSuccess(data.message));
+    } catch (error) {
+        dispatch(forgotPasswordFail(error.response?.data?.message || "Something went wrong"));
+    }
+};
 
 export const resetPassword = (formData, token) => async (dispatch) => {
-
     try {
-        dispatch(resetPasswordRequest())
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
-        const { data} =  await axios.post(`/api/v1/password/reset/${token}`, formData, config);
-        dispatch(resetPasswordSuccess(data))
+        dispatch(resetPasswordRequest());
+
+        const config = { headers: { "Content-Type": "application/json" } };
+
+        console.log("Sending request to reset password...");
+        console.log("Token:", token);
+        console.log("Form Data:", formData);
+
+        const { data } = await axios.post(
+            `/api/v1/password/reset/${token}`,
+            formData,
+            config
+        );
+
+        console.log("Response:", data);
+        dispatch(resetPasswordSuccess(data.message));
     } catch (error) {
-        dispatch(resetPasswordFail(error.response.data.message))
+        console.error("Error resetting password:", error.response?.data || error.message);
+        dispatch(resetPasswordFail(error.response?.data?.message || "Something went wrong"));
     }
+};
 
-}
 
-export const getUsers =  async (dispatch) => {
-
-    try {
-        dispatch(usersRequest())
-        const { data }  = await axios.get(`/api/v1/admin/users`);
-        dispatch(usersSuccess(data))
-    } catch (error) {
-        dispatch(usersFail(error.response.data.message))
-    }
-
-}
 
 export const getUser = id => async (dispatch) => {
 

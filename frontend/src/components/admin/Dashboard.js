@@ -2,7 +2,7 @@ import Sidebar from "./Sidebar";
 import {useDispatch, useSelector} from 'react-redux';
 import { useEffect } from "react";
 import { getAdminProducts } from "../../actions/productActions";
-import {getUsers} from '../../actions/userActions'
+import {getUser} from '../../actions/userActions'
 import {adminOrders as adminOrdersAction} from '../../actions/orderActions'
 import { Link } from "react-router-dom";
 
@@ -32,7 +32,7 @@ export default function Dashboard () {
 
     useEffect( () => {
        dispatch(getAdminProducts);
-       dispatch(getUsers);
+       dispatch(getUser);
        dispatch(adminOrdersAction)
     }, [])
 

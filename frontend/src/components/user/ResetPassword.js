@@ -1,44 +1,56 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetPassword, clearAuthError } from '../../actions/userActions';
-import {useNavigate, useParams} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export default function ResetPassword() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const dispatch = useDispatch();
-    const { isAuthenticated, error }  = useSelector(state => state.authState)
+    const { isAuthenticated, error } = useSelector(state => state.authState);
     const navigate = useNavigate();
     const { token } = useParams();
 
     const submitHandler  = (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('password', password);
-        formData.append('confirmPassword', confirmPassword);
         
-        dispatch(resetPassword(formData, token))
-    }
+        if (!password || !confirmPassword) {
+            return toast.error("Both fields are required");
+        }
+        
+        if (password !== confirmPassword) {
+            return toast.error("Passwords do not match");
+        }
 
-    useEffect(()=> {
-        if(isAuthenticated) {
-            toast('Password Reset Success!', {
-                type: 'success',
+        const formData = { password, confirmPassword };
+        dispatch(resetPassword(formData, token));
+
+        // ✅ Show success message immediately after clicking
+        toast.info("Setting new password, please wait...", {
+            position: toast.POSITION.BOTTOM_CENTER
+        });
+    };
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            toast.success('Password has been set successfully!', {
                 position: toast.POSITION.BOTTOM_CENTER
-            })
-            navigate('/')
-            return;
+            });
+
+            setTimeout(() => {
+                navigate('/login'); // Redirect to login page after success
+            }, 2000);
         }
-        if(error)  {
-            toast(error, {
-                position: toast.POSITION.BOTTOM_CENTER,
-                type: 'error',
-                onOpen: ()=> { dispatch(clearAuthError) }
-            })
-            return
+
+        if (error) {
+            toast.error(error, {
+                position: toast.POSITION.BOTTOM_CENTER
+            });
+
+            dispatch(clearAuthError());
         }
-    },[isAuthenticated, error, dispatch, navigate])
+    }, [isAuthenticated, error, dispatch, navigate]);
 
     return (
         <div className="row wrapper">
@@ -54,6 +66,7 @@ export default function ResetPassword() {
                             className="form-control"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
+                            required
                         />
                     </div>
 
@@ -65,18 +78,20 @@ export default function ResetPassword() {
                             className="form-control"
                             value={confirmPassword}
                             onChange={e => setConfirmPassword(e.target.value)}
+                            required
                         />
                     </div>
 
                     <button
                         id="new_password_button"
                         type="submit"
-                        className="btn btn-block py-3">
+                        className="btn btn-block py-3"
+                    >
                         Set Password
                     </button>
 
                 </form>
             </div>
         </div>
-    )
+    );
 }

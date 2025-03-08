@@ -5,6 +5,12 @@ const cookieParser = require('cookie-parser')
 const path = require('path')
 const dotenv = require('dotenv');
 dotenv.config({path:path.join(__dirname,"config/config.env")});
+const cors = require("cors");
+
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
 
 
 app.use(express.json());
@@ -21,12 +27,19 @@ app.use('/api/v1/',auth);
 app.use('/api/v1/',order);
 app.use('/api/v1/',payment);
 
-if(process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, '../frontend/build')));
-    app.get('*', (req, res) =>{
-        res.sendFile(path.resolve(__dirname, '../frontend/build/index.html'))
-    })
-}
+// if(process.env.NODE_ENV === "production") {
+//     app.use(express.static(path.join(__dirname, '../frontend/build')));
+//     app.get('*', (req, res) =>{
+//         res.sendFile(path.resolve(__dirname, '../frontend/build/index.html'))
+//     })
+// }
+
+// Serve frontend (React build files)
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../frontend/build", "index.html"));
+});
 
 app.use(errorMiddleware)
 
